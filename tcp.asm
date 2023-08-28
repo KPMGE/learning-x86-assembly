@@ -6,7 +6,7 @@ section .data
   buffer db buffer_size dup(0)
   msg db 0xa, "Got message: "
   len equ $ -msg
-  listen_msg db "Server listening...", 0xa
+  listen_msg db "Server listening on port 4444...", 0xa
   listen_msg_len equ $ -listen_msg
 
 section .text
@@ -46,18 +46,22 @@ _start:
 
   ; INADDR_ANY and struct padding
   push 0x0
-  ; port 3333 in hex bigendian
-  push WORD 0x697a
+  ; port 4444 in hex bigendian
+  push WORD 0x5c11
   ; AF_INET ip domain
   push WORD 0x02
   ; socketcall args
   mov ecx, esp
+  ; host address
+  push ecx
   ; sizeof(host_address)
   push 0x16
   ; host address
   push ecx
   ; socket file descriptor
   push esi
+  ; socketcall args
+  mov ecx, esp
   ; socketcall SYS_BIND action
   mov ebx, 0x2
   ; socketcall syscall
